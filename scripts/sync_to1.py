@@ -50,7 +50,7 @@ def build(raw):
     def embed(d): return re.sub(PAT,lambda m:m[1]+json.dumps(d,ensure_ascii=False).replace('<','\\u003c')+m[3],html,flags=re.S)
     combined=embed(data)
     single=json.loads(json.dumps(data));single['projects']=projects;single['groups']=data['groups'][:1];single['audit']={'all':audit(projects),'groups':{group:audit(projects)}};single['sourceNotes']=[];single['view']='to-1'
-    separate=embed(single).replace('<title>Dashboard theo dõi danh mục các dự án</title>','<title>Dashboard Tổ 1 – Hồ Thị Nguyên Thảo</title>')
+    separate=re.sub(PAT,lambda m:m[1]+json.dumps(single,ensure_ascii=False).replace('<','\\u003c')+m[3],(ROOT/'to-1/index.html').read_text(),flags=re.S)
     assert [p for p in json.loads(re.search(PAT,combined,re.S)[2])['projects'] if p['group']!=group]==other
     (ROOT/'index.html').write_text(combined);(ROOT/'to-1/index.html').write_text(separate)
     print('Validated and synchronized',len(projects),'Tổ 1 projects;',len(other),'other projects unchanged')
