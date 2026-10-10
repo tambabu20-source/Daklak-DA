@@ -17,7 +17,7 @@ def build(raw):
     assert len(rows)>=8 and 'TỔ CÔNG TÁC SỐ 1' in rows[0][0]
     assert len(rows[4])==14 and rows[4][1].strip()=='DỰ ÁN' and '2026' in rows[4][3] and 'triệu đồng' in rows[4][3]
     assert 'lũy kế' in rows[4][4] and 'Tóm tắt tiến độ'==rows[4][10]
-    assert 'tháng 9' in rows[5][7] and 'tháng 9' in rows[5][8]
+    assert re.search(r'tháng\s+\d+', rows[5][7], re.I) and re.search(r'tháng\s+\d+', rows[5][8], re.I)
     html=(ROOT/'index.html').read_text(); data=json.loads(re.search(PAT,html,re.S)[2]); group=data['groups'][0]['name']
     other=[p for p in data['projects'] if p['group']!=group]
     headers=[rows[5][i] if i in (7,8,9) else rows[4][i] for i in range(14)]
